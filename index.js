@@ -24,24 +24,26 @@ const comments = [
   },
 ];
 
-const likePressButtonsElements = document.querySelectorAll(".like-button");
-
-let i = 0;
+const likePressButtonsElement = document.querySelectorAll(".like-button");
+const likesCounterElements = document.querySelectorAll(".likes-counter");
+let likesCounterElement = Number.parseInt(likesCounterElement.textContent, 10);
+let isLiked = false;
 
 const initEventLike = () => {
-  for (const likePressButtonsElement of likePressButtonsElements) {
-    likePressButtonsElement.addEventListener("click", () => {
-      i = i + 1;
-      if (comments[index].isLiked === false) {
+      if (!isLiked) {
         likePressButtonsElement.classList.add("-active-like");
+        likesCounterElement++;
+        likesCounterElements.textContent = likesCounterElement;
+        isLiked = !isLiked; 
       } else {
         likePressButtonsElement.classList.remove("-active-like");
+        likesCounterElement--;
+        likesCounterElements.textContent = likesCounterElement;
+        isLiked = !isLiked;
       }
-    });
-  }
 };
 
-initEventLike();
+initEventLike.addEventListener('click', likeClick);
 
 const renderComments = () => {
   const commentsHtml = comments
@@ -67,7 +69,7 @@ const renderComments = () => {
     .join("");
 
   listElement.innerHTML = commentsHtml;
-  initEventLike();
+  initEventLike.addEventListener('click', likeClick);
 };
 renderComments();
 
