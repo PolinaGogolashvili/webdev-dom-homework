@@ -32,7 +32,7 @@ const initEventLike = () => {
   for (const likePressButtonsElement of likePressButtonsElements) {
     likePressButtonsElement.addEventListener("click", () => {
       i = i + 1;
-      if (i % 2 === 1) {
+      if (comments[index].isLiked === false) {
         likePressButtonsElement.classList.add("-active-like");
       } else {
         likePressButtonsElement.classList.remove("-active-like");
