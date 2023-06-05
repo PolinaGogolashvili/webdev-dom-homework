@@ -12,19 +12,40 @@ const comments = [
     name: "Глеб Фокин",
     time: "12.02.22 12:18",
     text: "Это будет первый комментарий на этой странице",
+    likes: "3",
     isLiked: false,
   },
   {
     name: "Варвара Н.",
     time: "13.02.22 19:22",
     text: "Мне нравится как оформлена эта страница! ❤",
+    likes: "75",
     isLiked: true,
   },
 ];
 
+const likePressButtonsElements = document.querySelectorAll(".like-button");
+
+let i = 0;
+
+const initEventLike = () => {
+  for (const likePressButtonsElement of likePressButtonsElements) {
+    likePressButtonsElement.addEventListener("click", () => {
+      i = i + 1;
+      if (i % 2 === 1) {
+        likePressButtonsElement.classList.add("-active-like");
+      } else {
+        likePressButtonsElement.classList.remove("-active-like");
+      }
+    });
+  }
+};
+
+initEventLike();
+
 const renderComments = () => {
   const commentsHtml = comments
-    .map((comment) => {
+    .map((comment, index) => {
       return `<li class="comment">
 <div class="comment-header">
   <div>${comment.name}</div>
@@ -37,8 +58,8 @@ const renderComments = () => {
 </div>
 <div class="comment-footer">
   <div class="likes">
-    <span class="likes-counter">0</span>
-    <button class="like-button"></button>
+    <span class="likes-counter">${comment.likes}</span>
+    <button data-index="${index}" class="like-button"></button>
   </div>
 </div>
 </li>`;
@@ -46,36 +67,9 @@ const renderComments = () => {
     .join("");
 
   listElement.innerHTML = commentsHtml;
+  initEventLike();
 };
 renderComments();
-
-const likePressButtonsListeners = () => {
-  const likePressButtonsElements = document.querySelectorAll("like-button");
-
-  for (const likePressButtonElement of likePressButtonsElements) {
-    likePressButtonElement.addEventListener("click", () => {
-      if (likePressButtonElement.classList.contains("-active-like") === true) {
-        const counters =
-          likePressButtonElement.parentNode.getElementsByClassName(
-            "likes-counter"
-          );
-        if (counters.length == 0) return;
-        counters[0].innerHTML = parseInt(counters[0].innerHTML) - 1;
-        likePressButtonElement.classList.remove("-active-like");
-      } else {
-        likePressButtonElement.classList.add("-active-like");
-        const counters =
-          likePressButtonElement.parentNode.getElementsByClassName(
-            "likes-counter"
-          );
-        if (counters.length == 0) return;
-        counters[0].innerHTML = parseInt(counters[0].innerHTML) + 1;
-      }
-    });
-  }
-};
-
-likePressButtonsListeners();
 
 buttonElement.addEventListener("click", () => {
   nameInputElement.classList.remove("error");
@@ -127,25 +121,16 @@ buttonElement.addEventListener("click", () => {
     ":" +
     minute;
 
-  listElement.innerHTML =
-    oldListHtml +
-    `<li class="comment">
-             <div class="comment-header">
-               <div>${nameInputElement.value}</div>
-               <div>${newDate}</div>
-             </div>
-             <div class="comment-body">
-               <div class="comment-text">
-                ${commentInputElement.value}
-               </div>
-             </div>
-             <div class="comment-footer">
-               <div class="likes">
-                 <span class="likes-counter">0</span>
-                 <button class="like-button"></button>
-               </div>
-             </div>
-           </li>`;
+  comments.push({
+    name: nameInputElement.value,
+    time: newDate,
+    text: commentInputElement.value,
+    likes: "0",
+    isLiked: false,
+  });
+
+  initEventLike();
+  renderComments();
 
   nameInputElement.value = "";
   commentInputElement.value = "";
