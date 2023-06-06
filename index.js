@@ -26,8 +26,6 @@ const comments = [
 
 const likePressButtonsElements = document.querySelectorAll(".like-button");
 
-let i = 0;
-
 const initEventLike = () => {
   for (const likePressButtonsElement of likePressButtonsElements) {
     likePressButtonsElement.addEventListener("click", () => {
@@ -36,11 +34,7 @@ const initEventLike = () => {
       const comment = comments[index];
       console.log(comment);
 
-      if (isLiked === false) {
-        likePressButtonsElement.classList.add("-active-like");
-      } else {
-        likePressButtonsElement.classList.remove("-active-like");
-      }
+        likePressButtonsElement[comment.isLiked];
 
       renderComments();
     });
