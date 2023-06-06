@@ -24,9 +24,8 @@ const comments = [
   },
 ];
 
-const likePressButtonsElements = document.querySelectorAll(".like-button");
-
 const initEventLike = () => {
+  const likePressButtonsElements = document.querySelectorAll(".like-button");
   for (const likePressButtonsElement of likePressButtonsElements) {
     likePressButtonsElement.addEventListener("click", () => {
       const index = likePressButtonsElement.dataset.index;
@@ -34,7 +33,9 @@ const initEventLike = () => {
       const comment = comments[index];
       console.log(comment);
 
-        likePressButtonsElement[comment.isLiked];
+      likePressButtonsElements[comment.isLiked];
+      comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
+      comment.isLiked = comment.isLiked ? false : true;
 
       renderComments();
     });
