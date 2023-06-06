@@ -59,7 +59,9 @@ const renderComments = () => {
 <div class="comment-footer">
   <div class="likes">
     <span class="likes-counter">${comment.likes}</span>
-    <button data-index="${index}" class="like-button"></button>
+    <button data-index="${index}" class="like-button ${
+        comment.isLiked ? "-active-like" : ""
+      }"></button>
   </div>
 </div>
 </li>`;
