@@ -12,14 +12,14 @@ const comments = [
     name: "Глеб Фокин",
     time: "12.02.22 12:18",
     text: "Это будет первый комментарий на этой странице",
-    likes: "3",
+    likes: 3,
     isLiked: false,
   },
   {
     name: "Варвара Н.",
     time: "13.02.22 19:22",
     text: "Мне нравится как оформлена эта страница! ❤",
-    likes: "75",
+    likes: 75,
     isLiked: true,
   },
 ];
@@ -29,9 +29,7 @@ const initEventLike = () => {
   for (const likePressButtonsElement of likePressButtonsElements) {
     likePressButtonsElement.addEventListener("click", () => {
       const index = likePressButtonsElement.dataset.index;
-      console.log(index);
       const comment = comments[index];
-      console.log(comment);
 
       likePressButtonsElements[comment.isLiked];
       comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
