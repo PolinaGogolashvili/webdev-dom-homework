@@ -31,12 +31,18 @@ let i = 0;
 const initEventLike = () => {
   for (const likePressButtonsElement of likePressButtonsElements) {
     likePressButtonsElement.addEventListener("click", () => {
-      i = i + 1;
-      if (i % 2 === 1) {
+      const index = likePressButtonsElement.dataset.index;
+      console.log(index);
+      const comment = comments[index];
+      console.log(comment);
+
+      if (isLiked === false) {
         likePressButtonsElement.classList.add("-active-like");
       } else {
         likePressButtonsElement.classList.remove("-active-like");
       }
+
+      renderComments();
     });
   }
 };
@@ -89,7 +95,6 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  const oldListHtml = listElement.innerHTML;
   let currentDate = new Date();
   let hour = currentDate.getHours();
   let minute = currentDate.getMinutes();
