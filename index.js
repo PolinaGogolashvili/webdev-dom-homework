@@ -122,9 +122,17 @@ buttonElement.addEventListener("click", () => {
     minute;
 
   comments.push({
-    name: nameInputElement.value,
+    name: nameInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
     time: newDate,
-    text: commentInputElement.value,
+    text: commentInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
     likes: "0",
     isLiked: false,
   });
