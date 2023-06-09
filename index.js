@@ -42,12 +42,30 @@ const initEventLike = () => {
 
 initEventLike();
 
+const commentTextClick = () => {
+  const textClickElements = document.querySelectorAll(".comment");
+
+  for (const textClickElement of textClickElements) {
+    textClickElement.addEventListener("click", (event) => {
+      const commentText = event.target.closest(".comment-text");
+      const commentName = document.querySelector(".comment-header");
+      console.log(commentName);
+      commentInputElement.value =
+        "&gt;" + commentText.textContent + commentName.textContent;
+
+      renderComments();
+    });
+  }
+};
+
+commentTextClick();
+
 const renderComments = () => {
   const commentsHtml = comments
     .map((comment, index) => {
       return `<li class="comment">
 <div class="comment-header">
-  <div>${comment.name}</div>
+  <div data-name="${comment.name}">${comment.name}</div>
   <div>${comment.time}</div>
 </div>
 <div class="comment-body">
@@ -69,6 +87,7 @@ const renderComments = () => {
 
   listElement.innerHTML = commentsHtml;
   initEventLike();
+  commentTextClick();
 };
 renderComments();
 
