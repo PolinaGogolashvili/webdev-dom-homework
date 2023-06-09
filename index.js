@@ -27,7 +27,8 @@ const comments = [
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
   for (const likePressButtonsElement of likePressButtonsElements) {
-    likePressButtonsElement.addEventListener("click", () => {
+    likePressButtonsElement.addEventListener("click", (event) => {
+      event.stopPropagation();
       const index = likePressButtonsElement.dataset.index;
       const comment = comments[index];
 
