@@ -182,7 +182,8 @@ buttonElement.addEventListener("click", () => {
           fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments").then((response) => { 
             response.json().then((responseData) => { 
               comments = responseData.comments; 
-              renderComments(); 
+              getComments();
+              renderComments();
             }); 
           }); 
         }); 
