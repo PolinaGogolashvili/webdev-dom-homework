@@ -49,10 +49,10 @@ const commentTextClick = () => {
   for (const textClickElement of textClickElements) {
     textClickElement.addEventListener("click", (event) => {
       const commentText = event.target.closest(".comment-text");
-      const commentName = document.querySelector(".comment-header");
+      const commentName = document.querySelector(".comment-name");
       console.log(commentName);
       commentInputElement.value =
-        "&gt;" + commentText.textContent + commentName.textContent;
+        ">" + commentText.textContent + commentName.textContent;
 
       renderComments();
     });
@@ -66,7 +66,7 @@ const renderComments = () => {
     .map((comment, index) => {
       return `<li class="comment">
 <div class="comment-header">
-  <div data-name="${comment.name}">${comment.name}</div>
+  <div class="comment-name" data-name="${comment.name}">${comment.name}</div>
   <div>${comment.time}</div>
 </div>
 <div class="comment-body">
