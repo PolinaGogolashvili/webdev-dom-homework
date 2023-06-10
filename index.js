@@ -7,7 +7,32 @@ const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
-const comments = [
+const fetchPromise = fetch(
+  "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
+  {
+    method: "GET",
+  }
+);
+
+fetchPromise.then((response) => {
+  const jsonPromise = response.json();
+  jsonPromise.then((responseData) => {
+    const appComments = responseData.comments.map((comment) => {
+      return {
+        name: comment.author.name,
+        date: new Date(comment.time),
+        text: comment.text,
+        likes: comment.likes,
+        isLiked: false,
+      };
+    });
+
+    comments = appComments;
+    renderComments();
+  });
+});
+
+let comments = [
   {
     name: "Глеб Фокин",
     time: "12.02.22 12:18",
