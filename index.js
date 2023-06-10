@@ -32,22 +32,7 @@ fetchPromise.then((response) => {
   });
 });
 
-let comments = [
-  {
-    name: "Глеб Фокин",
-    time: "12.02.22 12:18",
-    text: "Это будет первый комментарий на этой странице",
-    likes: 3,
-    isLiked: false,
-  },
-  {
-    name: "Варвара Н.",
-    time: "13.02.22 19:22",
-    text: "Мне нравится как оформлена эта страница! ❤",
-    likes: 75,
-    isLiked: true,
-  },
-];
+let comments = [];
 
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
@@ -73,11 +58,12 @@ const commentTextClick = () => {
 
   for (const textClickElement of textClickElements) {
     textClickElement.addEventListener("click", (event) => {
-      const commentText = event.target.closest(".comment-text");
-      const commentName = document.querySelector(".comment-name");
-      console.log(commentName);
-      commentInputElement.value =
-        ">" + commentText.textContent + commentName.textContent;
+      event.stopPropagation();
+
+      const index = textClickElement.dataset.index;
+      const comment = comments[index];
+
+      commentInputElement.value = `< ${comment.text}\n${comment.name}`;
 
       renderComments();
     });
@@ -89,9 +75,9 @@ commentTextClick();
 const renderComments = () => {
   const commentsHtml = comments
     .map((comment, index) => {
-      return `<li class="comment">
+      return `<li data-index="${index}" class="comment">
 <div class="comment-header">
-  <div class="comment-name" data-name="${comment.name}">${comment.name}</div>
+  <div class="comment-name">${comment.name}</div>
   <div>${comment.time}</div>
 </div>
 <div class="comment-body">
@@ -166,20 +152,43 @@ buttonElement.addEventListener("click", () => {
     ":" +
     minute;
 
-  comments.push({
-    name: nameInputElement.value
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("&", "&amp;")
-      .replaceAll('"', "&quot;"),
-    time: newDate,
-    text: commentInputElement.value
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("&", "&amp;")
-      .replaceAll('"', "&quot;"),
-    likes: "0",
-    isLiked: false,
+  //   comments.push({
+  //     name: nameInputElement.value
+  //       .replaceAll("<", "&lt;")
+  //       .replaceAll(">", "&gt;")
+  //       .replaceAll("&", "&amp;")
+  //       .replaceAll('"', "&quot;"),
+  //     time: newDate,
+  //     text: commentInputElement.value
+  //       .replaceAll("<", "&lt;")
+  //       .replaceAll(">", "&gt;")
+  //       .replaceAll("&", "&amp;")
+  //       .replaceAll('"', "&quot;"),
+  //     likes: "0",
+  //     isLiked: false,
+  //   });
+
+  fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+    method: "POST",
+    body: JSON.stringify({
+      name: nameInputElement.value,
+      text: commentInputElement.value,
+    }),
+  }).then((response) => {
+    response.json().then((responseData) => {
+      const appComments = responseData.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: new Date(comment.time),
+          text: comment.text,
+          likes: comment.likes,
+          isLiked: false,
+        };
+      });
+
+      comments = appComments;
+      renderComments();
+    });
   });
 
   renderComments();
