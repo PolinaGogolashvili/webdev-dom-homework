@@ -27,7 +27,8 @@ const comments = [
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
   for (const likePressButtonsElement of likePressButtonsElements) {
-    likePressButtonsElement.addEventListener("click", () => {
+    likePressButtonsElement.addEventListener("click", (event) => {
+      event.stopPropagation();
       const index = likePressButtonsElement.dataset.index;
       const comment = comments[index];
 
@@ -42,12 +43,30 @@ const initEventLike = () => {
 
 initEventLike();
 
+const commentTextClick = () => {
+  const textClickElements = document.querySelectorAll(".comment");
+
+  for (const textClickElement of textClickElements) {
+    textClickElement.addEventListener("click", (event) => {
+      const commentText = event.target.closest(".comment-text");
+      const commentName = document.querySelector(".comment-name");
+      console.log(commentName);
+      commentInputElement.value =
+        ">" + commentText.textContent + commentName.textContent;
+
+      renderComments();
+    });
+  }
+};
+
+commentTextClick();
+
 const renderComments = () => {
   const commentsHtml = comments
     .map((comment, index) => {
       return `<li class="comment">
 <div class="comment-header">
-  <div>${comment.name}</div>
+  <div class="comment-name" data-name="${comment.name}">${comment.name}</div>
   <div>${comment.time}</div>
 </div>
 <div class="comment-body">
@@ -69,6 +88,7 @@ const renderComments = () => {
 
   listElement.innerHTML = commentsHtml;
   initEventLike();
+  commentTextClick();
 };
 renderComments();
 
@@ -122,9 +142,17 @@ buttonElement.addEventListener("click", () => {
     minute;
 
   comments.push({
-    name: nameInputElement.value,
+    name: nameInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
     time: newDate,
-    text: commentInputElement.value,
+    text: commentInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
     likes: "0",
     isLiked: false,
   });
