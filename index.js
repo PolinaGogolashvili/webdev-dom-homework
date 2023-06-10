@@ -7,30 +7,33 @@ const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
-const fetchPromise = fetch(
-  "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
-  {
-    method: "GET",
-  }
-);
+const getComments = () => {
+  const fetchPromise = fetch(
+    "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
+    {
+      method: "GET",
+    }
+  );
 
-fetchPromise.then((response) => {
-  const jsonPromise = response.json();
-  jsonPromise.then((responseData) => {
-    const appComments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: new Date(comment.time),
-        text: comment.text,
-        likes: comment.likes,
-        isLiked: false,
-      };
+  fetchPromise.then((response) => {
+    const jsonPromise = response.json();
+    jsonPromise.then((responseData) => {
+      const appComments = responseData.comments.map((comment) => {
+        return {
+          name: comment.author.name,
+          date: new Date(comment.time),
+          text: comment.text,
+          likes: comment.likes,
+          isLiked: false,
+        };
+      });
+
+      comments = appComments;
+      renderComments();
     });
-
-    comments = appComments;
-    renderComments();
   });
-});
+};
+getComments();
 
 let comments = [];
 
@@ -168,33 +171,27 @@ buttonElement.addEventListener("click", () => {
   //     isLiked: false,
   //   });
 
-  fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-    method: "POST",
-    body: JSON.stringify({
-      name: nameInputElement.value,
-      text: commentInputElement.value,
-    }),
-  }).then((response) => {
-    response.json().then((responseData) => {
-      const appComments = responseData.comments.map((comment) => {
-        return {
-          name: comment.author.name,
-          date: new Date(comment.time),
-          text: comment.text,
-          likes: comment.likes,
-          isLiked: false,
-        };
-      });
+  function updateComments() {
+    fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+      method: "POST", 
+      body: JSON.stringify({ 
+        name: nameInputElement.value, 
+        text: commentInputElement.value, }), 
+      }).then((response) => { 
+        response.json().then((responseData) => { 
+          fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments").then((response) => { 
+            response.json().then((responseData) => { 
+              comments = responseData.comments; 
+              renderComments(); 
+            }); 
+          }); 
+        }); 
+      }); 
+    }
 
-      comments = appComments;
-      renderComments();
-    });
-  });
-
+  updateComments();
   renderComments();
 
   nameInputElement.value = "";
   commentInputElement.value = "";
 });
-
-console.log("It works!");
