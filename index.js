@@ -156,24 +156,34 @@ buttonElement.addEventListener("click", () => {
     });
 
   function updateComments() {
-    fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
       method: "POST", 
       body: JSON.stringify({ 
         name: nameInputElement.value, 
-        text: commentInputElement.value, }), 
-      }).then((response) => { 
-        response.json().then((responseData) => { 
-          fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments").then((response) => { 
-            response.json().then((responseData) => { 
+        text: commentInputElement.value,
+      }), 
+      })
+      .then((response) => { 
+        return response
+      })
+        .then(() => {
+          return json(); 
+        })
+        .then((responseData) => {
+          return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+            method: "GET",  
+          })
+        }) 
+          .then((response) => { 
+            return response.json()
+          })
+            .then((responseData) => { 
               comments = responseData.comments; 
               getComments();
-              renderComments();
-            }); 
-          }); 
-        }); 
-      }); 
+              renderComments()
+        });  
     }
-
+    
   updateComments();
   renderComments();
 
