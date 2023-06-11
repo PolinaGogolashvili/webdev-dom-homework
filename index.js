@@ -109,6 +109,8 @@ getComments();
 renderComments();
 
 buttonElement.addEventListener("click", () => {
+  buttonElement.disabled = true;
+  buttonElement.textContent = "Комментарий добавляется";
   function updateComments() {
     return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
       method: "POST", 
@@ -118,29 +120,21 @@ buttonElement.addEventListener("click", () => {
       }), 
       })
       .then((response) => { 
-        return response
+        return response.json();
       })
         .then(() => {
-          return json(); 
+          return getComments();
         })
-        .then(() => {
-          getComments();
-        })
-        .then((responseData) => {
-          return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-            method: "GET",  
-          })
-        }) 
-          .then((response) => { 
-            return response.json()
-          })
-            .then((responseData) => { 
-              comments = responseData.comments; 
-              renderComments()
+        .then(() => { 
+          buttonElement.disabled = false;
+          buttonElement.textContent = "Написать";
         });  
     }
 
   updateComments();
+  getComments();
+  renderComments();
+  
 
   nameInputElement.classList.remove("error");
   commentInputElement.classList.remove("error");
@@ -189,7 +183,6 @@ buttonElement.addEventListener("click", () => {
       likes: "0",
       isLiked: false,
     });
-
   renderComments();
 
   nameInputElement.value = "";
