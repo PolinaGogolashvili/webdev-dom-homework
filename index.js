@@ -11,16 +11,15 @@ const commentElements = document.querySelectorAll(".comment");
 
 
 const getComments = () => {
-  const fetchPromise = fetch(
+  return fetch(
     "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
     {
       method: "GET",
-    }
-  );
-
-  fetchPromise.then((response) => {
-    const jsonPromise = response.json();
-    jsonPromise.then((responseData) => {
+    })
+      .then((response) => {
+    return response.json();
+      })
+    .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
@@ -34,8 +33,7 @@ const getComments = () => {
       comments = appComments;
       renderComments();
     });
-  });
-};
+  }
 getComments();
 
 
