@@ -1,11 +1,14 @@
 "use strict";
 
+let comments = [];
+
 const listElement = document.getElementById("list");
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
 const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
+
 
 const getComments = () => {
   const fetchPromise = fetch(
@@ -21,7 +24,7 @@ const getComments = () => {
       const appComments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
-          date: new Date(comment.time),
+          date: new Date(comment.date),
           text: comment.text,
           likes: comment.likes,
           isLiked: false,
@@ -35,7 +38,6 @@ const getComments = () => {
 };
 getComments();
 
-let comments = [];
 
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
@@ -81,7 +83,7 @@ const renderComments = () => {
       return `<li data-index="${index}" class="comment">
 <div class="comment-header">
   <div class="comment-name">${comment.name}</div>
-  <div>${comment.time}</div>
+  <div>${comment.date}</div>
 </div>
 <div class="comment-body">
   <div class="comment-text">
@@ -122,54 +124,38 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
+
   let currentDate = new Date();
-  let hour = currentDate.getHours();
-  let minute = currentDate.getMinutes();
-  let day = currentDate.getDate();
-  let month = currentDate.getMonth();
+      let month = Number(currentDate.getMonth() + 1);
+      let minute = currentDate.getMinutes();
+      let year = String(currentDate.getFullYear());
+      year = year.split('').splice(2, 3).join('');
 
-  if (minute < 10) {
-    minute = "0" + minute;
-  }
+      if (month < 10) {
+        month = "0" + month;
+      }
+    
+      if (minute < 10) {
+        minute = "0" + minute;
+      }
 
-  if (hour < 10) {
-    hour = "0" + hour;
-  }
+      let newDate = currentDate.getDate() + '.' + month + '.' + year + ' ' + currentDate.getHours() + ':' + minute;
 
-  if (day < 10) {
-    day = "0" + day;
-  }
-
-  if (month < 10) {
-    month = "0" + month;
-  }
-
-  let newDate =
-    day +
-    "." +
-    month +
-    "." +
-    currentDate.getFullYear() +
-    " " +
-    hour +
-    ":" +
-    minute;
-
-  //   comments.push({
-  //     name: nameInputElement.value
-  //       .replaceAll("<", "&lt;")
-  //       .replaceAll(">", "&gt;")
-  //       .replaceAll("&", "&amp;")
-  //       .replaceAll('"', "&quot;"),
-  //     time: newDate,
-  //     text: commentInputElement.value
-  //       .replaceAll("<", "&lt;")
-  //       .replaceAll(">", "&gt;")
-  //       .replaceAll("&", "&amp;")
-  //       .replaceAll('"', "&quot;"),
-  //     likes: "0",
-  //     isLiked: false,
-  //   });
+    comments.push({
+      name: nameInputElement.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;"),
+      time: `${newDate}`,
+      text: commentInputElement.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;"),
+      likes: "0",
+      isLiked: false,
+    });
 
   function updateComments() {
     fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
