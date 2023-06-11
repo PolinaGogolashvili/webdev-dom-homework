@@ -11,6 +11,7 @@ const commentElements = document.querySelectorAll(".comment");
 
 
 const getComments = () => {
+  listElement.textContent = "Загружаю комментарии...";
   return fetch(
     "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
     {
@@ -104,9 +105,43 @@ const renderComments = () => {
   initEventLike();
   commentTextClick();
 };
+getComments();
 renderComments();
 
 buttonElement.addEventListener("click", () => {
+  function updateComments() {
+    return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+      method: "POST", 
+      body: JSON.stringify({ 
+        name: nameInputElement.value, 
+        text: commentInputElement.value,
+      }), 
+      })
+      .then((response) => { 
+        return response
+      })
+        .then(() => {
+          return json(); 
+        })
+        .then(() => {
+          getComments();
+        })
+        .then((responseData) => {
+          return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+            method: "GET",  
+          })
+        }) 
+          .then((response) => { 
+            return response.json()
+          })
+            .then((responseData) => { 
+              comments = responseData.comments; 
+              renderComments()
+        });  
+    }
+
+  updateComments();
+
   nameInputElement.classList.remove("error");
   commentInputElement.classList.remove("error");
 
@@ -155,36 +190,6 @@ buttonElement.addEventListener("click", () => {
       isLiked: false,
     });
 
-  function updateComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-      method: "POST", 
-      body: JSON.stringify({ 
-        name: nameInputElement.value, 
-        text: commentInputElement.value,
-      }), 
-      })
-      .then((response) => { 
-        return response
-      })
-        .then(() => {
-          return json(); 
-        })
-        .then((responseData) => {
-          return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-            method: "GET",  
-          })
-        }) 
-          .then((response) => { 
-            return response.json()
-          })
-            .then((responseData) => { 
-              comments = responseData.comments; 
-              getComments();
-              renderComments()
-        });  
-    }
-    
-  updateComments();
   renderComments();
 
   nameInputElement.value = "";
