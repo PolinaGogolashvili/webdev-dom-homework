@@ -145,14 +145,32 @@ buttonElement.addEventListener("click", () => {
       }),
     })
       .then((response) => {
-        return response.json();
+        if (response.status === 201) {
+          return response.json();
+        } else if (response.status === 400) {
+          throw new Error("Плохой запрос");
+        } else if (response.status === 500) {
+          return Promise.reject("Сервер упал");
+        }
       })
       .then(() => {
+        buttonElement.disabled = true;
+        buttonElement.textContent = "Загружаю список";
         return getComments();
       })
       .then(() => {
         buttonElement.disabled = false;
         buttonElement.textContent = "Написать";
+        commentInputElement.value = "";
+      })
+      .catch((error) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
+        if (error.message === "Плохой запрос") {
+          alert("Имя и комментарий должны быть не короче 3 символов");
+        } else if (error.message === "Сервер упал") {
+          alert("Сервер сломался, попробуй позже");
+        }
       });
   }
 
@@ -175,21 +193,6 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  // comments.push({
-  //   name: nameInputElement.value
-  //     .replaceAll("<", "&lt;")
-  //     .replaceAll(">", "&gt;")
-  //     .replaceAll("&", "&amp;")
-  //     .replaceAll('"', "&quot;"),
-  //   time: getDate(comment.date),
-  //   text: commentInputElement.value
-  //     .replaceAll("<", "&lt;")
-  //     .replaceAll(">", "&gt;")
-  //     .replaceAll("&", "&amp;")
-  //     .replaceAll('"', "&quot;"),
-  //   likes: "0",
-  //   isLiked: false,
-  // });
   renderComments();
 
   nameInputElement.value = "";
