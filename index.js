@@ -145,12 +145,12 @@ buttonElement.addEventListener("click", () => {
       }),
     })
       .then((response) => {
-        if (response.status === 201) {
-          return response.json();
-        } else if (response.status === 400) {
+        if (response.status === 400) {
           throw new Error("Плохой запрос");
         } else if (response.status === 500) {
-          return Promise.reject("Сервер упал");
+          throw new Error("Сервер упал");
+        } else {
+          return response.json();
         }
       })
       .then(() => {
@@ -171,6 +171,7 @@ buttonElement.addEventListener("click", () => {
         } else if (error.message === "Сервер упал") {
           alert("Сервер сломался, попробуй позже");
         }
+        console.warn(error);
       });
   }
 
