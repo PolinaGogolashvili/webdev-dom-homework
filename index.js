@@ -9,17 +9,14 @@ const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
-
 const getComments = () => {
   listElement.textContent = "Загружаю комментарии...";
-  return fetch(
-    "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
-    {
-      method: "GET",
+  return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+    method: "GET",
+  })
+    .then((response) => {
+      return response.json();
     })
-      .then((response) => {
-    return response.json();
-      })
     .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
         return {
@@ -34,9 +31,8 @@ const getComments = () => {
       comments = appComments;
       renderComments();
     });
-  }
+};
 getComments();
-
 
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
@@ -113,28 +109,27 @@ buttonElement.addEventListener("click", () => {
   buttonElement.textContent = "Комментарий добавляется";
   function updateComments() {
     return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-      method: "POST", 
-      body: JSON.stringify({ 
-        name: nameInputElement.value, 
+      method: "POST",
+      body: JSON.stringify({
+        name: nameInputElement.value,
         text: commentInputElement.value,
-      }), 
-      })
-      .then((response) => { 
+      }),
+    })
+      .then((response) => {
         return response.json();
       })
-        .then(() => {
-          return getComments();
-        })
-        .then(() => { 
-          buttonElement.disabled = false;
-          buttonElement.textContent = "Написать";
-        });  
-    }
+      .then(() => {
+        return getComments();
+      })
+      .then(() => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
+      });
+  }
 
   updateComments();
   getComments();
   renderComments();
-  
 
   nameInputElement.classList.remove("error");
   commentInputElement.classList.remove("error");
@@ -151,38 +146,50 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
+  function getDate() {
+    let currentDate = new Date();
+    let month = Number(currentDate.getMonth() + 1);
+    let minute = currentDate.getMinutes();
+    let year = String(currentDate.getFullYear());
+    year = year.split("").splice(2, 3).join("");
 
-  let currentDate = new Date();
-      let month = Number(currentDate.getMonth() + 1);
-      let minute = currentDate.getMinutes();
-      let year = String(currentDate.getFullYear());
-      year = year.split('').splice(2, 3).join('');
+    if (month < 10) {
+      month = "0" + month;
+    }
 
-      if (month < 10) {
-        month = "0" + month;
-      }
-    
-      if (minute < 10) {
-        minute = "0" + minute;
-      }
+    if (minute < 10) {
+      minute = "0" + minute;
+    }
 
-      let newDate = currentDate.getDate() + '.' + month + '.' + year + ' ' + currentDate.getHours() + ':' + minute;
+    return (
+      currentDate.getDate() +
+      "." +
+      month +
+      "." +
+      year +
+      " " +
+      currentDate.getHours() +
+      ":" +
+      minute
+    );
+  }
+  getDate();
 
-    comments.push({
-      name: nameInputElement.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;"),
-      time: `${newDate}`,
-      text: commentInputElement.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;"),
-      likes: "0",
-      isLiked: false,
-    });
+  comments.push({
+    name: nameInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
+    time: getDate(comment.date),
+    text: commentInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
+    likes: "0",
+    isLiked: false,
+  });
   renderComments();
 
   nameInputElement.value = "";
