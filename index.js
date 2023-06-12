@@ -9,7 +9,6 @@ const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
-
 const getComments = () => {
   const fetchPromise = fetch(
     "https://wedev-api.sky.pro/api/v1/polina-gogol/comments",
@@ -37,7 +36,6 @@ const getComments = () => {
   });
 };
 getComments();
-
 
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
@@ -124,57 +122,73 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
+  function getDate() {
+    let currentDate = new Date();
+    let month = Number(currentDate.getMonth() + 1);
+    let minute = currentDate.getMinutes();
+    let year = String(currentDate.getFullYear());
+    year = year.split("").splice(2, 3).join("");
 
-  let currentDate = new Date();
-      let month = Number(currentDate.getMonth() + 1);
-      let minute = currentDate.getMinutes();
-      let year = String(currentDate.getFullYear());
-      year = year.split('').splice(2, 3).join('');
+    if (month < 10) {
+      month = "0" + month;
+    }
 
-      if (month < 10) {
-        month = "0" + month;
-      }
-    
-      if (minute < 10) {
-        minute = "0" + minute;
-      }
+    if (minute < 10) {
+      minute = "0" + minute;
+    }
 
-      let newDate = currentDate.getDate() + '.' + month + '.' + year + ' ' + currentDate.getHours() + ':' + minute;
+    return (
+      currentDate.getDate() +
+      "." +
+      month +
+      "." +
+      year +
+      " " +
+      currentDate.getHours() +
+      ":" +
+      minute
+    );
+  }
 
-    comments.push({
-      name: nameInputElement.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;"),
-      time: `${newDate}`,
-      text: commentInputElement.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;"),
-      likes: "0",
-      isLiked: false,
-    });
+  getDate();
+
+  comments.push({
+    name: nameInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
+    time: getDate(comment.date),
+    text: commentInputElement.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll("&", "&amp;")
+      .replaceAll('"', "&quot;"),
+    likes: "0",
+    isLiked: false,
+  });
 
   function updateComments() {
     fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-      method: "POST", 
-      body: JSON.stringify({ 
-        name: nameInputElement.value, 
-        text: commentInputElement.value, }), 
-      }).then((response) => { 
-        response.json().then((responseData) => { 
-          fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments").then((response) => { 
-            response.json().then((responseData) => { 
-              comments = responseData.comments; 
+      method: "POST",
+      body: JSON.stringify({
+        name: nameInputElement.value,
+        text: commentInputElement.value,
+      }),
+    }).then((response) => {
+      response.json().then((responseData) => {
+        fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments").then(
+          (response) => {
+            response.json().then((responseData) => {
+              comments = responseData.comments;
               getComments();
               renderComments();
-            }); 
-          }); 
-        }); 
-      }); 
-    }
+            });
+          }
+        );
+      });
+    });
+  }
 
   updateComments();
   renderComments();
