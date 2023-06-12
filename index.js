@@ -9,6 +9,35 @@ const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
+function getDate(date) {
+  let currentDate = new Date(date);
+  let month = Number(currentDate.getMonth() + 1);
+  let minute = currentDate.getMinutes();
+  let year = String(currentDate.getFullYear());
+  year = year.split("").splice(2, 3).join("");
+
+  if (month < 10) {
+    month = "0" + month;
+  }
+
+  if (minute < 10) {
+    minute = "0" + minute;
+  }
+
+  return (
+    currentDate.getDate() +
+    "." +
+    month +
+    "." +
+    year +
+    " " +
+    currentDate.getHours() +
+    ":" +
+    minute
+  );
+}
+getDate();
+
 const getComments = () => {
   listElement.textContent = "Загружаю комментарии...";
   return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
@@ -21,7 +50,7 @@ const getComments = () => {
       const appComments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
-          date: new Date(comment.date),
+          date: getDate(comment.date),
           text: comment.text,
           likes: comment.likes,
           isLiked: false,
@@ -146,50 +175,21 @@ buttonElement.addEventListener("click", () => {
     return;
   }
 
-  function getDate() {
-    let currentDate = new Date();
-    let month = Number(currentDate.getMonth() + 1);
-    let minute = currentDate.getMinutes();
-    let year = String(currentDate.getFullYear());
-    year = year.split("").splice(2, 3).join("");
-
-    if (month < 10) {
-      month = "0" + month;
-    }
-
-    if (minute < 10) {
-      minute = "0" + minute;
-    }
-
-    return (
-      currentDate.getDate() +
-      "." +
-      month +
-      "." +
-      year +
-      " " +
-      currentDate.getHours() +
-      ":" +
-      minute
-    );
-  }
-  getDate();
-
-  comments.push({
-    name: nameInputElement.value
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("&", "&amp;")
-      .replaceAll('"', "&quot;"),
-    time: getDate(comment.date),
-    text: commentInputElement.value
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll("&", "&amp;")
-      .replaceAll('"', "&quot;"),
-    likes: "0",
-    isLiked: false,
-  });
+  // comments.push({
+  //   name: nameInputElement.value
+  //     .replaceAll("<", "&lt;")
+  //     .replaceAll(">", "&gt;")
+  //     .replaceAll("&", "&amp;")
+  //     .replaceAll('"', "&quot;"),
+  //   time: getDate(comment.date),
+  //   text: commentInputElement.value
+  //     .replaceAll("<", "&lt;")
+  //     .replaceAll(">", "&gt;")
+  //     .replaceAll("&", "&amp;")
+  //     .replaceAll('"', "&quot;"),
+  //   likes: "0",
+  //   isLiked: false,
+  // });
   renderComments();
 
   nameInputElement.value = "";
