@@ -142,6 +142,7 @@ buttonElement.addEventListener("click", () => {
       body: JSON.stringify({
         name: nameInputElement.value,
         text: commentInputElement.value,
+        forceError: true,
       }),
     })
       .then((response) => {
