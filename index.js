@@ -170,8 +170,13 @@ buttonElement.addEventListener("click", () => {
         buttonElement.textContent = "Написать";
         if (error.message === "Плохой запрос") {
           alert("Имя и комментарий должны быть не короче 3 символов");
-        } else if (error.message === "Сервер упал") {
+          return;
+        }
+        if (error.message === "Сервер упал") {
           alert("Сервер сломался, попробуй позже");
+          return;
+        } else {
+          alert("Похоже, у вас пропал интернет");
         }
         console.warn(error);
       });
