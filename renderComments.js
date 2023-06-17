@@ -1,11 +1,12 @@
-const renderComments = () => {
+
+
+const renderComments = (element, getListComments) => {
     const commentsHtml = comments
-      .map((comment, index) => {
-        return 
-  
-    listElement.innerHTML = commentsHtml;
+      .map((comment, index) => getListComments.join(comment, index, getDate));
+    element.innerHTML = commentsHtml;
+
     initEventLike();
     commentTextClick();
-  })};
+  };
   getComments();
   renderComments();
