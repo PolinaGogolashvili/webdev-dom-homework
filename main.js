@@ -1,15 +1,15 @@
 "use strict";
 
-let comments = [];
+
+import { comments } from "./api.js";
+import { getListComments } from "./commentsList.js";
+import { renderComments } from "./renderComments.js";
 
 const listElement = document.getElementById("list");
-const nameInputElement = document.getElementById("name-input");
-const commentInputElement = document.getElementById("comment-input");
-const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
-function getDate(date) {
+export function getDate(date) {
   let currentDate = new Date(date);
   let month = Number(currentDate.getMonth() + 1);
   let minute = currentDate.getMinutes();
@@ -63,7 +63,7 @@ const getComments = () => {
 };
 getComments();
 
-const initEventLike = () => {
+export const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
   for (const likePressButtonsElement of likePressButtonsElements) {
     likePressButtonsElement.addEventListener("click", (event) => {
@@ -82,7 +82,7 @@ const initEventLike = () => {
 
 initEventLike();
 
-const commentTextClick = () => {
+export const commentTextClick = () => {
   const textClickElements = document.querySelectorAll(".comment");
 
   for (const textClickElement of textClickElements) {
@@ -102,50 +102,49 @@ const commentTextClick = () => {
 commentTextClick();
 
 
-
 buttonElement.addEventListener("click", () => {
   buttonElement.disabled = true;
   buttonElement.textContent = "Комментарий добавляется";
-  function updateComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-      method: "POST",
-      body: JSON.stringify({
-        name: nameInputElement.value,
-        text: commentInputElement.value,
-        forceError: true,
-      }),
-    })
-      .then((response) => {
-        if (response.status === 400) {
-          throw new Error("Плохой запрос");
-        } else if (response.status === 500) {
-          throw new Error("Сервер упал");
-        } else {
-          return response.json();
-        }
-      })
-      .then(() => {
-        buttonElement.disabled = true;
-        buttonElement.textContent = "Загружаю список";
-        return getComments();
-      })
-      .then(() => {
-        buttonElement.disabled = false;
-        buttonElement.textContent = "Написать";
-        nameInputElement.value = "";
-        commentInputElement.value = "";
-      })
-      .catch((error) => {
-        buttonElement.disabled = false;
-        buttonElement.textContent = "Написать";
-        if (error.message === "Плохой запрос") {
-          alert("Имя и комментарий должны быть не короче 3 символов");
-        } else if (error.message === "Сервер упал") {
-          alert("Сервер сломался, попробуй позже");
-        }
-        console.warn(error);
-      });
-  }
+  // function updateComments() {
+  //   return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       name: nameInputElement.value,
+  //       text: commentInputElement.value,
+  //       forceError: true,
+  //     }),
+  //   })
+  //     .then((response) => {
+  //       if (response.status === 400) {
+  //         throw new Error("Плохой запрос");
+  //       } else if (response.status === 500) {
+  //         throw new Error("Сервер упал");
+  //       } else {
+  //         return response.json();
+  //       }
+  //     })
+  //     .then(() => {
+  //       buttonElement.disabled = true;
+  //       buttonElement.textContent = "Загружаю список";
+  //       return getComments();
+  //     })
+  //     .then(() => {
+  //       buttonElement.disabled = false;
+  //       buttonElement.textContent = "Написать";
+  //       nameInputElement.value = "";
+  //       commentInputElement.value = "";
+  //     })
+  //     .catch((error) => {
+  //       buttonElement.disabled = false;
+  //       buttonElement.textContent = "Написать";
+  //       if (error.message === "Плохой запрос") {
+  //         alert("Имя и комментарий должны быть не короче 3 символов");
+  //       } else if (error.message === "Сервер упал") {
+  //         alert("Сервер сломался, попробуй позже");
+  //       }
+  //       console.warn(error);
+  //     });
+  // }
 
   updateComments();
   getComments();
