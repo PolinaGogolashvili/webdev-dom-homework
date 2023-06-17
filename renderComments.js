@@ -1,3 +1,4 @@
+import { comments } from "./api.js";
 import { getDate } from "./main.js";
 import { initEventLike } from "./main.js";
 import { commentTextClick } from "./main.js";
