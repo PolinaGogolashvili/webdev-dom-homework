@@ -1,7 +1,7 @@
 "use strict";
 
-
 import { comments } from "./api.js";
+import { getComments, updateComments } from "./api.js";
 import { getListComments } from "./commentsList.js";
 import { renderComments } from "./renderComments.js";
 
@@ -38,30 +38,10 @@ export function getDate(date) {
 }
 getDate();
 
-const getComments = () => {
-  listElement.textContent = "Загружаю комментарии...";
-  return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-    method: "GET",
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((responseData) => {
-      const appComments = responseData.comments.map((comment) => {
-        return {
-          name: comment.author.name,
-          date: getDate(comment.date),
-          text: comment.text,
-          likes: comment.likes,
-          isLiked: false,
-        };
-      });
-
-      comments = appComments;
-      renderComments();
-    });
-};
-getComments();
+listElement.textContent = "Загружаю комментарии...";
+getComments().then(() => {
+  return renderComments(listElement, getListComments);
+});
 
 export const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
@@ -100,7 +80,6 @@ export const commentTextClick = () => {
 };
 
 commentTextClick();
-
 
 buttonElement.addEventListener("click", () => {
   buttonElement.disabled = true;

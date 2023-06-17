@@ -5,7 +5,6 @@ const commentInputElement = document.getElementById("comment-input");
 const buttonElement = document.getElementById("form-button");
 
 const getComments = () => {
-  listElement.textContent = "Загружаю комментарии...";
   return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
     method: "GET",
   })
