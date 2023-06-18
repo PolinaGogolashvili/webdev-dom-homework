@@ -4,9 +4,9 @@ import { initEventLike } from "./main.js";
 import { commentTextClick } from "./main.js";
 
 const renderComments = (element, getListComments) => {
-  const commentsHtml = comments.map((comment, index) =>
-    getListComments.join(comment, index, getDate)
-  );
+  const commentsHtml = comments
+    .map((comment, index) => getListComments(comment, index, getDate))
+    .join("");
   element.innerHTML = commentsHtml;
 
   initEventLike();

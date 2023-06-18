@@ -1,5 +1,8 @@
 export let comments = [];
 
+import { getDate } from "./main.js";
+import { renderComments } from "./renderComments.js";
+
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
 const buttonElement = document.getElementById("form-button");

@@ -6,6 +6,7 @@ import { getListComments } from "./commentsList.js";
 import { renderComments } from "./renderComments.js";
 
 const listElement = document.getElementById("list");
+const buttonElement = document.getElementById("form-button");
 
 const commentElements = document.querySelectorAll(".comment");
 
@@ -36,7 +37,7 @@ export function getDate(date) {
     minute
   );
 }
-getDate();
+// getDate();
 
 listElement.textContent = "Загружаю комментарии...";
 getComments().then(() => {
