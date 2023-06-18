@@ -81,9 +81,9 @@ export const commentTextClick = () => {
     buttonElement.disabled = true;
     buttonElement.textContent = "Комментарий добавляется"
 
-    updateComments();
-    getComments();
-    renderComments(listElement, getListComments);
+    // updateComments();
+    // getComments();
+    // renderComments(listElement, getListComments);
 
     nameInputElement.classList.remove("error");
     commentInputElement.classList.remove("error");
@@ -100,7 +100,7 @@ export const commentTextClick = () => {
       return;
     }
 
-
+    updateComments().then(getComments).then(() => renderComments(listElement, getListComments))
     // renderComments();
   });
 };
