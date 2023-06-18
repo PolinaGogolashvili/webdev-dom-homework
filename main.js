@@ -56,14 +56,14 @@ export const initEventLike = () => {
       comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
       comment.isLiked = comment.isLiked ? false : true;
 
-      renderComments();
+      renderComments(listElement, getListComments);
     });
   }
 };
 
-initEventLike();
-
 export const commentTextClick = () => {
+  const nameInputElement = document.getElementById("name-input");
+  const commentInputElement = document.getElementById("comment-input");
   const textClickElements = document.querySelectorAll(".comment");
 
   for (const textClickElement of textClickElements) {
@@ -74,76 +74,33 @@ export const commentTextClick = () => {
       const comment = comments[index];
 
       commentInputElement.value = `< ${comment.text}\n${comment.name}`;
-
-      renderComments();
     });
   }
+
+  buttonElement.addEventListener("click", () => {
+    buttonElement.disabled = true;
+    buttonElement.textContent = "Комментарий добавляется"
+
+    updateComments();
+    getComments();
+    renderComments(listElement, getListComments);
+
+    nameInputElement.classList.remove("error");
+    commentInputElement.classList.remove("error");
+
+    if (nameInputElement.value === "" && commentInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      commentInputElement.classList.add("error");
+      return;
+    } else if (nameInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      return;
+    } else if (commentInputElement.value === "") {
+      commentInputElement.classList.add("error");
+      return;
+    }
+
+
+    // renderComments();
+  });
 };
-
-commentTextClick();
-
-buttonElement.addEventListener("click", () => {
-  buttonElement.disabled = true;
-  buttonElement.textContent = "Комментарий добавляется";
-  // function updateComments() {
-  //   return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       name: nameInputElement.value,
-  //       text: commentInputElement.value,
-  //       forceError: true,
-  //     }),
-  //   })
-  //     .then((response) => {
-  //       if (response.status === 400) {
-  //         throw new Error("Плохой запрос");
-  //       } else if (response.status === 500) {
-  //         throw new Error("Сервер упал");
-  //       } else {
-  //         return response.json();
-  //       }
-  //     })
-  //     .then(() => {
-  //       buttonElement.disabled = true;
-  //       buttonElement.textContent = "Загружаю список";
-  //       return getComments();
-  //     })
-  //     .then(() => {
-  //       buttonElement.disabled = false;
-  //       buttonElement.textContent = "Написать";
-  //       nameInputElement.value = "";
-  //       commentInputElement.value = "";
-  //     })
-  //     .catch((error) => {
-  //       buttonElement.disabled = false;
-  //       buttonElement.textContent = "Написать";
-  //       if (error.message === "Плохой запрос") {
-  //         alert("Имя и комментарий должны быть не короче 3 символов");
-  //       } else if (error.message === "Сервер упал") {
-  //         alert("Сервер сломался, попробуй позже");
-  //       }
-  //       console.warn(error);
-  //     });
-  // }
-
-  updateComments();
-  getComments();
-  renderComments();
-
-  nameInputElement.classList.remove("error");
-  commentInputElement.classList.remove("error");
-
-  if (nameInputElement.value === "" && commentInputElement.value === "") {
-    nameInputElement.classList.add("error");
-    commentInputElement.classList.add("error");
-    return;
-  } else if (nameInputElement.value === "") {
-    nameInputElement.classList.add("error");
-    return;
-  } else if (commentInputElement.value === "") {
-    commentInputElement.classList.add("error");
-    return;
-  }
-
-  renderComments();
-});

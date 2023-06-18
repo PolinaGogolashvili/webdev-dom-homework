@@ -1,7 +1,6 @@
 export let comments = [];
 
 import { getDate } from "./main.js";
-import { renderComments } from "./renderComments.js";
 
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
@@ -26,7 +25,7 @@ const getComments = () => {
       });
 
       comments = appComments;
-      renderComments();
+      // renderComments();
     });
 };
 
@@ -36,7 +35,6 @@ function updateComments() {
     body: JSON.stringify({
       name: nameInputElement.value,
       text: commentInputElement.value,
-      forceError: true,
     }),
   })
     .then((response) => {
