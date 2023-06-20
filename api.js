@@ -1,17 +1,29 @@
 export let comments = [];
 
-import { getDate } from "./main.js";
+const host = "https://wedev-api.sky.pro/api/v2/polina-gogol/comments"
+
 
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
 const buttonElement = document.getElementById("form-button");
 
-const getComments = () => {
-  return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+let token = "Bearer bgc0b8awbwas6g5g5k5o5s5w606g37w3cc3bo3b83k39s3co3c83c03ck";
+
+const getComments = ({token}) => {
+  return fetch(host, {
     method: "GET",
+    headers: {
+      Authorization: token,
+    },
   })
     .then((response) => {
-      return response.json();
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      if (response.status === 500) {
+        throw new Error("Сервер сломался");
+      }
+        return response.json();
     })
     .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
@@ -30,7 +42,7 @@ const getComments = () => {
 };
 
 function updateComments() {
-  return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+  return fetch(host, {
     method: "POST",
     body: JSON.stringify({
       name: nameInputElement.value,
