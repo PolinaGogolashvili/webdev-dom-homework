@@ -115,31 +115,81 @@ const commentTextClick = () => {
 commentTextClick();
 
 const renderComments = () => {
+const appEl = document.getElementById('app');
   const commentsHtml = comments
-    .map((comment, index) => {
-      return `<li data-index="${index}" class="comment">
+  .map((comment, index) => {
+    return `<li data-index="${index}" class="comment">
 <div class="comment-header">
-  <div class="comment-name">${comment.name}</div>
-  <div>${comment.date}</div>
+<div class="comment-name">${comment.name}</div>
+<div>${comment.date}</div>
 </div>
 <div class="comment-body">
-  <div class="comment-text">
-   ${comment.text}
-  </div>
+<div class="comment-text">
+ ${comment.text}
+</div>
 </div>
 <div class="comment-footer">
-  <div class="likes">
-    <span class="likes-counter">${comment.likes}</span>
-    <button data-index="${index}" class="like-button ${
-        comment.isLiked ? "-active-like" : ""
-      }"></button>
-  </div>
+<div class="likes">
+  <span class="likes-counter">${comment.likes}</span>
+  <button data-index="${index}" class="like-button ${
+      comment.isLiked ? "-active-like" : ""
+    }"></button>
+</div>
 </div>
 </li>`;
-    })
-    .join("");
+  })
+  .join("");
 
-  listElement.innerHTML = commentsHtml;
+const appHtml = `<div class="container">
+<ul class="comments" id="list">
+  <!-- Список рендерится из JS -->
+${commentsHtml}
+</ul>
+
+<div class="authorization-form">
+  <h3 class="authorization-form-title">Форма входа</h3>
+  <div class="authorization-input-container">
+    Логин
+    <input
+      type="text"
+      class="authorization-form-name"
+      id="login-input"
+    />
+    <br />
+    Пароль
+    <input
+      type="text"
+      class="authorization-form-name"
+      id="login-input"
+    />
+    <br />
+  </div>
+  <div class="add-form-row">
+    <button class="add-form-button" id="login-button">Войти</button>
+  </div>
+</div>
+
+<div class="add-form">
+  <input
+    type="text"
+    class="add-form-name"
+    id="name-input"
+    placeholder="Введите ваше имя"
+  />
+  <textarea
+    type="textarea"
+    class="add-form-text"
+    id="comment-input"
+    placeholder="Введите ваш комментарий"
+    rows="4"
+  ></textarea>
+  <div class="add-form-row">
+    <button class="add-form-button" id="form-button">Написать</button>
+  </div>
+</div>
+</div>`;
+
+  appEl.innerHTML = commentsHtml;
   initEventLike();
   commentTextClick();
 };
