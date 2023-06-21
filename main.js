@@ -2,6 +2,10 @@
 
 let comments = [];
 
+let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
+
+const host = "https://wedev-api.sky.pro/api/v2/polina-gogol/comments";
+
 const listElement = document.getElementById("list");
 const nameInputElement = document.getElementById("name-input");
 const commentInputElement = document.getElementById("comment-input");
@@ -40,10 +44,19 @@ getDate();
 
 const getComments = () => {
   listElement.textContent = "Загружаю комментарии...";
-  return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+  return fetch(host, {
     method: "GET",
+    headers: {
+      Authorization: token,
+    },
   })
     .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Нет авторизации");
+      }
+      if (response.status === 500) {
+        throw new Error("Сервер сломался");
+      }
       return response.json();
     })
     .then((responseData) => {
@@ -137,12 +150,15 @@ buttonElement.addEventListener("click", () => {
   buttonElement.disabled = true;
   buttonElement.textContent = "Комментарий добавляется";
   function updateComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/polina-gogol/comments", {
+    return fetch(host, {
       method: "POST",
       body: JSON.stringify({
         name: nameInputElement.value,
         text: commentInputElement.value,
       }),
+      headers: {
+        Authorization: token,
+      },
     })
       .then((response) => {
         if (response.status === 400) {
