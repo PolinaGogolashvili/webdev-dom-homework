@@ -1,80 +1,9 @@
 "use strict";
 
+import { getComments } from "./api.js";
+
+
 let comments = [];
-
-let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
-
-const host = "https://wedev-api.sky.pro/api/v2/polina-gogol/comments";
-
-const listElement = document.getElementById("list");
-const nameInputElement = document.getElementById("name-input");
-const commentInputElement = document.getElementById("comment-input");
-const buttonElement = document.getElementById("form-button");
-
-const commentElements = document.querySelectorAll(".comment");
-
-function getDate(date) {
-  let currentDate = new Date(date);
-  let month = Number(currentDate.getMonth() + 1);
-  let minute = currentDate.getMinutes();
-  let year = String(currentDate.getFullYear());
-  year = year.split("").splice(2, 3).join("");
-
-  if (month < 10) {
-    month = "0" + month;
-  }
-
-  if (minute < 10) {
-    minute = "0" + minute;
-  }
-
-  return (
-    currentDate.getDate() +
-    "." +
-    month +
-    "." +
-    year +
-    " " +
-    currentDate.getHours() +
-    ":" +
-    minute
-  );
-}
-getDate();
-
-const getComments = () => {
-  listElement.textContent = "Загружаю комментарии...";
-  return fetch(host, {
-    method: "GET",
-    headers: {
-      Authorization: token,
-    },
-  })
-    .then((response) => {
-      if (response.status === 401) {
-        throw new Error("Нет авторизации");
-      }
-      if (response.status === 500) {
-        throw new Error("Сервер сломался");
-      }
-      return response.json();
-    })
-    .then((responseData) => {
-      const appComments = responseData.comments.map((comment) => {
-        return {
-          name: comment.author.name,
-          date: getDate(comment.date),
-          text: comment.text,
-          likes: comment.likes,
-          isLiked: false,
-        };
-      });
-
-      comments = appComments;
-      renderComments();
-    });
-};
-getComments();
 
 const initEventLike = () => {
   const likePressButtonsElements = document.querySelectorAll(".like-button");
@@ -93,8 +22,6 @@ const initEventLike = () => {
   }
 };
 
-initEventLike();
-
 const commentTextClick = () => {
   const textClickElements = document.querySelectorAll(".comment");
 
@@ -112,13 +39,11 @@ const commentTextClick = () => {
   }
 };
 
-commentTextClick();
-
 const renderComments = () => {
-const appEl = document.getElementById('app');
+  const appEl = document.getElementById("app");
   const commentsHtml = comments
-  .map((comment, index) => {
-    return `<li data-index="${index}" class="comment">
+    .map((comment, index) => {
+      return `<li data-index="${index}" class="comment">
 <div class="comment-header">
 <div class="comment-name">${comment.name}</div>
 <div>${comment.date}</div>
@@ -132,15 +57,15 @@ const appEl = document.getElementById('app');
 <div class="likes">
   <span class="likes-counter">${comment.likes}</span>
   <button data-index="${index}" class="like-button ${
-      comment.isLiked ? "-active-like" : ""
-    }"></button>
+        comment.isLiked ? "-active-like" : ""
+      }"></button>
 </div>
 </div>
 </li>`;
-  })
-  .join("");
+    })
+    .join("");
 
-const appHtml = `<div class="container">
+  const appHtml = `<div class="container">
 <ul class="comments" id="list">
   <!-- Список рендерится из JS -->
 ${commentsHtml}
@@ -189,82 +114,71 @@ ${commentsHtml}
 </div>
 </div>`;
 
-  appEl.innerHTML = commentsHtml;
+  appEl.innerHTML = appHtml;
+  const listElement = document.getElementById("list");
+  const nameInputElement = document.getElementById("name-input");
+  const commentInputElement = document.getElementById("comment-input");
+  const buttonElement = document.getElementById("add-form-button");
+  const commentElements = document.querySelectorAll(".comment");
+
   initEventLike();
   commentTextClick();
 };
-getComments();
-renderComments();
-
-buttonElement.addEventListener("click", () => {
-  buttonElement.disabled = true;
-  buttonElement.textContent = "Комментарий добавляется";
-  function updateComments() {
-    return fetch(host, {
-      method: "POST",
-      body: JSON.stringify({
-        name: nameInputElement.value,
-        text: commentInputElement.value,
-      }),
-      headers: {
-        Authorization: token,
-      },
-    })
-      .then((response) => {
-        if (response.status === 400) {
-          throw new Error("Плохой запрос");
-        } else if (response.status === 500) {
-          throw new Error("Сервер упал");
-        } else {
-          return response.json();
-        }
-      })
-      .then(() => {
-        buttonElement.disabled = true;
-        buttonElement.textContent = "Загружаю список";
-        return getComments();
-      })
-      .then(() => {
-        buttonElement.disabled = false;
-        buttonElement.textContent = "Написать";
-        nameInputElement.value = "";
-        commentInputElement.value = "";
-      })
-      .catch((error) => {
-        buttonElement.disabled = false;
-        buttonElement.textContent = "Написать";
-        if (error.message === "Плохой запрос") {
-          alert("Имя и комментарий должны быть не короче 3 символов");
-          return;
-        }
-        if (error.message === "Сервер упал") {
-          alert("Сервер сломался, попробуй позже");
-          return;
-        } else {
-          alert("Похоже, у вас пропал интернет");
-        }
-        console.warn(error);
-      });
-  }
-
-  updateComments();
-  getComments();
-  renderComments();
-
-  nameInputElement.classList.remove("error");
-  commentInputElement.classList.remove("error");
-
-  if (nameInputElement.value === "" && commentInputElement.value === "") {
-    nameInputElement.classList.add("error");
-    commentInputElement.classList.add("error");
-    return;
-  } else if (nameInputElement.value === "") {
-    nameInputElement.classList.add("error");
-    return;
-  } else if (commentInputElement.value === "") {
-    commentInputElement.classList.add("error");
-    return;
-  }
-
+getComments().then((data) => {
+  comments = data;
   renderComments();
 });
+
+// buttonElement.addEventListener("click", () => {
+//   buttonElement.disabled = true;
+//   buttonElement.textContent = "Комментарий добавляется";
+//   function updateComments() {
+    // .then(() => {
+    //   buttonElement.disabled = true;
+    //   buttonElement.textContent = "Загружаю список";
+    //   return getComments();
+    // })
+    // .then(() => {
+    //   buttonElement.disabled = false;
+    //   buttonElement.textContent = "Написать";
+    //   nameInputElement.value = "";
+    //   commentInputElement.value = "";
+    // })
+    // .catch((error) => {
+    //   buttonElement.disabled = false;
+    //   buttonElement.textContent = "Написать";
+    //   if (error.message === "Плохой запрос") {
+    //     alert("Имя и комментарий должны быть не короче 3 символов");
+    //     return;
+    //   }
+    //   if (error.message === "Сервер упал") {
+    //     alert("Сервер сломался, попробуй позже");
+    //     return;
+    //   } else {
+    //     alert("Похоже, у вас пропал интернет");
+    //   }
+    //   console.warn(error);
+    // });
+  // }
+
+  // updateComments();
+  // getComments();
+  // renderComments();
+
+//   nameInputElement.classList.remove("error");
+//   commentInputElement.classList.remove("error");
+
+//   if (nameInputElement.value === "" && commentInputElement.value === "") {
+//     nameInputElement.classList.add("error");
+//     commentInputElement.classList.add("error");
+//     return;
+//   } else if (nameInputElement.value === "") {
+//     nameInputElement.classList.add("error");
+//     return;
+//   } else if (commentInputElement.value === "") {
+//     commentInputElement.classList.add("error");
+//     return;
+//   }
+
+//   renderComments();
+// });
