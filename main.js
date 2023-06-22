@@ -1,8 +1,9 @@
 "use strict";
 
-import { getComments } from "./api.js";
+import { getComments, addComment } from "./api.js";
 
-
+let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
+token = null;
 let comments = [];
 
 const initEventLike = () => {
@@ -17,7 +18,7 @@ const initEventLike = () => {
       comment.likes = comment.isLiked ? comment.likes - 1 : comment.likes + 1;
       comment.isLiked = comment.isLiked ? false : true;
 
-      renderComments();
+      renderApp();
     });
   }
 };
@@ -34,13 +35,48 @@ const commentTextClick = () => {
 
       commentInputElement.value = `< ${comment.text}\n${comment.name}`;
 
-      renderComments();
+      renderApp();
     });
   }
 };
 
-const renderComments = () => {
+const renderApp = () => {
   const appEl = document.getElementById("app");
+if(!token) {
+  const appHtml = `
+<div class="authorization-form">
+  <h3 class="authorization-form-title">Форма входа</h3>
+  <div class="authorization-input-container">
+    Логин
+    <input
+      type="text"
+      class="authorization-form-name"
+      id="login-input"
+    />
+    <br />
+    Пароль
+    <input
+      type="text"
+      class="authorization-form-name"
+      id="login-input"
+    />
+    <br />
+  </div>
+  <div class="add-form-row">
+    <button class="add-form-button" id="login-button">Войти</button>
+  </div>
+</div>
+</div>`;
+
+  appEl.innerHTML = appHtml;
+
+document.getElementById('login-button').addEventListener('click', () => {
+  token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
+  renderApp();
+})
+
+  return;  
+}
   const commentsHtml = comments
     .map((comment, index) => {
       return `<li data-index="${index}" class="comment">
@@ -70,29 +106,6 @@ const renderComments = () => {
   <!-- Список рендерится из JS -->
 ${commentsHtml}
 </ul>
-
-<div class="authorization-form">
-  <h3 class="authorization-form-title">Форма входа</h3>
-  <div class="authorization-input-container">
-    Логин
-    <input
-      type="text"
-      class="authorization-form-name"
-      id="login-input"
-    />
-    <br />
-    Пароль
-    <input
-      type="text"
-      class="authorization-form-name"
-      id="login-input"
-    />
-    <br />
-  </div>
-  <div class="add-form-row">
-    <button class="add-form-button" id="login-button">Войти</button>
-  </div>
-</div>
 
 <div class="add-form">
   <input
@@ -126,7 +139,7 @@ ${commentsHtml}
 };
 getComments().then((data) => {
   comments = data;
-  renderComments();
+  renderApp();
 });
 
 // buttonElement.addEventListener("click", () => {
