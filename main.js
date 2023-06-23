@@ -113,8 +113,6 @@ ${commentsHtml}
   const buttonElement = document.querySelector(".add-form-button");
   const commentElements = document.querySelectorAll(".comment");
 
-  // TODO: разобраться почему не работает обработчик собьітий
-
   buttonElement.addEventListener("click", () => {
     buttonElement.disabled = true;
     buttonElement.textContent = "Комментарий добавляется";

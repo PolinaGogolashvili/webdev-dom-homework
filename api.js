@@ -63,11 +63,25 @@ export function loginUser ({login, password}) {
   }).then((response) => {
     if (response.status === 400) {
       throw new Error("Неверный логин или пароль");
-    } else if (response.status === 500) {
-      throw new Error("Сервер упал, попробуйте позже");
     } else {
       return response.json();
     }
   });
 };
 
+export function registerUser ({login, password, name}) {
+  return fetch("https://wedev-api.sky.pro/api/user", {
+    method: "POST",
+    body: JSON.stringify({
+      login,
+      password,
+      name,
+    }),
+  }).then((response) => {
+    if (response.status === 400) {
+      throw new Error("Такой пользователь уже зарегистрирован!");
+    } else {
+      return response.json();
+    }
+  });
+};

@@ -1,4 +1,5 @@
 import { loginUser } from "./api.js";
+import { registerUser } from "./api.js";
 
 export function renderLoginComponent({ appEl, setToken, renderApp }) {
   let isLoginMode = true;
@@ -49,23 +50,23 @@ export function renderLoginComponent({ appEl, setToken, renderApp }) {
       </div>
     </div>
     </div>`;
-    
-      appEl.innerHTML = appHtml;
-    
-      document.getElementById("login-button").addEventListener("click", () => {
+
+    appEl.innerHTML = appHtml;
+
+    document.getElementById("login-button").addEventListener("click", () => {
+      if (isLoginMode) {
         const login = document.getElementById("login-input").value;
         const password = document.getElementById("password-input").value;
-    
         if (!login) {
           alert("Введите логин");
           return;
         }
-    
+
         if (!password) {
           alert("Введите пароль");
           return;
         }
-    
+
         loginUser({
           login: login,
           password: password,
@@ -77,12 +78,45 @@ export function renderLoginComponent({ appEl, setToken, renderApp }) {
           .catch((error) => {
             alert(error.message);
           });
-      });
-    
-      document.getElementById("toggle-button").addEventListener("click", () => {
-        isLoginMode = !isLoginMode;
-        renderForm();
-      });
+      } else {
+        const name = document.getElementById("name-input").value;
+        const login = document.getElementById("login-input").value;
+        const password = document.getElementById("password-input").value;
+
+        if (!name) {
+            alert("Введите имя");
+            return;
+          }
+
+        if (!login) {
+          alert("Введите логин");
+          return;
+        }
+
+        if (!password) {
+          alert("Введите пароль");
+          return;
+        }
+
+        registerUser({
+          login: login,
+          password: password,
+          name: name,
+        })
+          .then((user) => {
+            setToken(`Bearer ${user.user.token}`);
+            renderApp();
+          })
+          .catch((error) => {
+            alert(error.message);
+          });
+      }
+    });
+
+    document.getElementById("toggle-button").addEventListener("click", () => {
+      isLoginMode = !isLoginMode;
+      renderForm();
+    });
   };
   renderForm();
 }
