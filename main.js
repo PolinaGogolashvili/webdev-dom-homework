@@ -110,7 +110,7 @@ ${commentsHtml}
   const listElement = document.getElementById("list");
   const nameInputElement = document.getElementById("name-input");
   const commentInputElement = document.getElementById("comment-input");
-  const buttonElement = document.querySelector("add-form-button");
+  const buttonElement = document.querySelector(".add-form-button");
   const commentElements = document.querySelectorAll(".comment");
 
   // TODO: разобраться почему не работает обработчик собьітий
@@ -150,7 +150,7 @@ ${commentsHtml}
       });
 
     getComments();
-    renderComments();
+    renderApp();
 
     nameInputElement.classList.remove("error");
     commentInputElement.classList.remove("error");
@@ -167,7 +167,7 @@ ${commentsHtml}
       return;
     }
 
-    renderComments();
+    renderApp();
   });
 
   initEventLike();
