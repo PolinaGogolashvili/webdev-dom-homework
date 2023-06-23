@@ -62,9 +62,9 @@ export function loginUser ({login, password}) {
     }),
   }).then((response) => {
     if (response.status === 400) {
-      throw new Error("Плохой запрос");
+      throw new Error("Неверный логин или пароль");
     } else if (response.status === 500) {
-      throw new Error("Сервер упал");
+      throw new Error("Сервер упал, попробуйте позже");
     } else {
       return response.json();
     }

@@ -14,9 +14,9 @@ export function renderLoginComponent({ appEl, setToken, renderApp }) {
     <br />
     Пароль
     <input
-      type="text"
+      type="password"
       class="authorization-form-name"
-      id="login-input"
+      id="password-input"
     />
     <br />
   </div>
@@ -29,13 +29,29 @@ export function renderLoginComponent({ appEl, setToken, renderApp }) {
   appEl.innerHTML = appHtml;
 
   document.getElementById("login-button").addEventListener("click", () => {
+    const login = document.getElementById("login-input").value;
+    const password = document.getElementById("password-input").value;
+
+    if (!login) {
+      alert("Введите логин");
+      return;
+    }
+
+    if (!password) {
+      alert("Введите пароль");
+      return;
+    }
+
     loginUser({
-      login: "admin",
-      password: "admin",
-    }).then((user) => {
-      console.log(user);
-      setToken(`Bearer ${user.user.token}`);
-      renderApp();
-    });
+      login: login,
+      password: password,
+    })
+      .then((user) => {
+        setToken(`Bearer ${user.user.token}`);
+        renderApp();
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
   });
 }
