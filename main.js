@@ -1,6 +1,7 @@
 "use strict";
 
 import { getComments, addComment } from "./api.js";
+import { renderLoginComponent } from "./loginComponents.js";
 
 let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
 token = null;
@@ -42,41 +43,19 @@ const commentTextClick = () => {
 
 const renderApp = () => {
   const appEl = document.getElementById("app");
-if(!token) {
-  const appHtml = `
-<div class="authorization-form">
-  <h3 class="authorization-form-title">Форма входа</h3>
-  <div class="authorization-input-container">
-    Логин
-    <input
-      type="text"
-      class="authorization-form-name"
-      id="login-input"
-    />
-    <br />
-    Пароль
-    <input
-      type="text"
-      class="authorization-form-name"
-      id="login-input"
-    />
-    <br />
-  </div>
-  <div class="add-form-row">
-    <button class="add-form-button" id="login-button">Войти</button>
-  </div>
-</div>
-</div>`;
 
-  appEl.innerHTML = appHtml;
+  if (!token) {
+    renderLoginComponent({
+      appEl,
+      setToken: (newToken) => {
+        token = newToken;
+      },
+      renderApp,
+    });
 
-document.getElementById('login-button').addEventListener('click', () => {
-  token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
-  renderApp();
-})
+    return;
+  }
 
-  return;  
-}
   const commentsHtml = comments
     .map((comment, index) => {
       return `<li data-index="${index}" class="comment">
@@ -131,8 +110,65 @@ ${commentsHtml}
   const listElement = document.getElementById("list");
   const nameInputElement = document.getElementById("name-input");
   const commentInputElement = document.getElementById("comment-input");
-  const buttonElement = document.getElementById("add-form-button");
+  const buttonElement = document.querySelector("add-form-button");
   const commentElements = document.querySelectorAll(".comment");
+
+  // TODO: разобраться почему не работает обработчик собьітий
+
+  buttonElement.addEventListener("click", () => {
+    buttonElement.disabled = true;
+    buttonElement.textContent = "Комментарий добавляется";
+    addComment({
+      text: commentInputElement.value,
+      token,
+    })
+      .then(() => {
+        buttonElement.disabled = true;
+        buttonElement.textContent = "Загружаю список";
+        return getComments();
+      })
+      .then(() => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
+        nameInputElement.value = "";
+        commentInputElement.value = "";
+      })
+      .catch((error) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = "Написать";
+        if (error.message === "Плохой запрос") {
+          alert("Имя и комментарий должны быть не короче 3 символов");
+          return;
+        }
+        if (error.message === "Сервер упал") {
+          alert("Сервер сломался, попробуй позже");
+          return;
+        } else {
+          alert("Похоже, у вас пропал интернет");
+        }
+        console.warn(error);
+      });
+
+    getComments();
+    renderComments();
+
+    nameInputElement.classList.remove("error");
+    commentInputElement.classList.remove("error");
+
+    if (nameInputElement.value === "" && commentInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      commentInputElement.classList.add("error");
+      return;
+    } else if (nameInputElement.value === "") {
+      nameInputElement.classList.add("error");
+      return;
+    } else if (commentInputElement.value === "") {
+      commentInputElement.classList.add("error");
+      return;
+    }
+
+    renderComments();
+  });
 
   initEventLike();
   commentTextClick();
@@ -141,57 +177,3 @@ getComments().then((data) => {
   comments = data;
   renderApp();
 });
-
-// buttonElement.addEventListener("click", () => {
-//   buttonElement.disabled = true;
-//   buttonElement.textContent = "Комментарий добавляется";
-//   function updateComments() {
-    // .then(() => {
-    //   buttonElement.disabled = true;
-    //   buttonElement.textContent = "Загружаю список";
-    //   return getComments();
-    // })
-    // .then(() => {
-    //   buttonElement.disabled = false;
-    //   buttonElement.textContent = "Написать";
-    //   nameInputElement.value = "";
-    //   commentInputElement.value = "";
-    // })
-    // .catch((error) => {
-    //   buttonElement.disabled = false;
-    //   buttonElement.textContent = "Написать";
-    //   if (error.message === "Плохой запрос") {
-    //     alert("Имя и комментарий должны быть не короче 3 символов");
-    //     return;
-    //   }
-    //   if (error.message === "Сервер упал") {
-    //     alert("Сервер сломался, попробуй позже");
-    //     return;
-    //   } else {
-    //     alert("Похоже, у вас пропал интернет");
-    //   }
-    //   console.warn(error);
-    // });
-  // }
-
-  // updateComments();
-  // getComments();
-  // renderComments();
-
-//   nameInputElement.classList.remove("error");
-//   commentInputElement.classList.remove("error");
-
-//   if (nameInputElement.value === "" && commentInputElement.value === "") {
-//     nameInputElement.classList.add("error");
-//     commentInputElement.classList.add("error");
-//     return;
-//   } else if (nameInputElement.value === "") {
-//     nameInputElement.classList.add("error");
-//     return;
-//   } else if (commentInputElement.value === "") {
-//     commentInputElement.classList.add("error");
-//     return;
-//   }
-
-//   renderComments();
-// });
