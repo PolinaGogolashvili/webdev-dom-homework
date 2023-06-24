@@ -44,18 +44,6 @@ const commentTextClick = () => {
 const renderApp = () => {
   const appEl = document.getElementById("app");
 
-  if (!token) {
-    renderLoginComponent({
-      appEl,
-      setToken: (newToken) => {
-        token = newToken;
-      },
-      renderApp,
-    });
-
-    return;
-  }
-
   const commentsHtml = comments
     .map((comment, index) => {
       return `<li data-index="${index}" class="comment">
@@ -65,13 +53,13 @@ const renderApp = () => {
 </div>
 <div class="comment-body">
 <div class="comment-text">
- ${comment.text}
+${comment.text}
 </div>
 </div>
 <div class="comment-footer">
 <div class="likes">
-  <span class="likes-counter">${comment.likes}</span>
-  <button data-index="${index}" class="like-button ${
+<span class="likes-counter">${comment.likes}</span>
+<button data-index="${index}" class="like-button ${
         comment.isLiked ? "-active-like" : ""
       }"></button>
 </div>
@@ -80,33 +68,57 @@ const renderApp = () => {
     })
     .join("");
 
-  const appHtml = `<div class="container">
-<ul class="comments" id="list">
-  <!-- Список рендерится из JS -->
-${commentsHtml}
-</ul>
+  if (!token) {
+    const appHtml = `
+    <ul class="comments">
+            ${commentsHtml}
+        </ul>
+        <p class="login-text">Чтобы добавить комментарий, <button class="login-button">авторизуйтесь</button></p>
+    `;
 
-<div class="add-form">
-  <input
-    type="text"
-    class="add-form-name"
-    id="name-input"
-    placeholder="Введите ваше имя"
-  />
-  <textarea
-    type="textarea"
-    class="add-form-text"
-    id="comment-input"
-    placeholder="Введите ваш комментарий"
-    rows="4"
-  ></textarea>
-  <div class="add-form-row">
-    <button class="add-form-button" id="form-button">Написать</button>
+    appEl.innerHTML = appHtml;
+
+    document.querySelector(".login-button").addEventListener("click", () => {
+      renderLoginComponent({
+        appEl,
+        setToken: (newToken) => {
+          token = newToken;
+        },
+        renderApp,
+      });
+    });
+
+    return;
+  }
+
+  const appHtml = `<div class="container">
+  <ul class="comments" id="list">
+    <!-- Список рендерится из JS -->
+  ${commentsHtml}
+  </ul>
+  
+  <div class="add-form">
+    <input
+      type="text"
+      class="add-form-name"
+      id="name-input"
+      placeholder="Введите ваше имя"
+    />
+    <textarea
+      type="textarea"
+      class="add-form-text"
+      id="comment-input"
+      placeholder="Введите ваш комментарий"
+      rows="4"
+    ></textarea>
+    <div class="add-form-row">
+      <button class="add-form-button" id="form-button">Написать</button>
+    </div>
   </div>
-</div>
-</div>`;
+  </div>`;
 
   appEl.innerHTML = appHtml;
+
   const listElement = document.getElementById("list");
   const nameInputElement = document.getElementById("name-input");
   const commentInputElement = document.getElementById("comment-input");
