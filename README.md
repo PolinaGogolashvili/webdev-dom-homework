@@ -1,6 +1,5 @@
 # Проект "Комментарии"
-
-https://glebkaf.github.io/webdev-dom-homework/
+Приложение доступно по ссылке: https://polinagogolashvili.github.io/webdev-dom-homework/
 
 Верстка для учебного проекта студентов Skypro
 
