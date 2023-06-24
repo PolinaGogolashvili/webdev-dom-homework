@@ -69,11 +69,11 @@ ${comment.text}
     .join("");
 
   if (!token) {
-    const appHtml = `
+    const appHtml = `<div class = "container">
     <ul class="comments">
             ${commentsHtml}
         </ul>
-        <p class="login-text">Чтобы добавить комментарий, <button class="login-button">авторизуйтесь</button></p>
+        <p class="login-text">Чтобы добавить комментарий, <button class="login-button">авторизуйтесь</button></p></div>
     `;
 
     appEl.innerHTML = appHtml;

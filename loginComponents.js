@@ -5,51 +5,51 @@ export function renderLoginComponent({ appEl, setToken, renderApp }) {
   let isLoginMode = true;
 
   const renderForm = () => {
-    const appHtml = `
-    <div class="authorization-form">
-      <h3 class="authorization-form-title">Форма ${
-        isLoginMode ? "входа" : "регистрации"
-      }</h3>
-      <div class="authorization-input-container">
-    
-      ${
-        isLoginMode
-          ? ""
-          : `Имя
+    const appHtml = `<div class = "container"><div class="authorization-form">
+    <h3 class="authorization-form-title">Форма ${
+      isLoginMode ? "входа" : "регистрации"
+    }</h3>
+    <div class="authorization-input-container">
+  
+    ${
+      isLoginMode
+        ? ""
+        : `Имя
+    <input
+      type="text"
+      class="authorization-form-name"
+      id="name-input"
+    />
+    <br />`
+    }
+  
+      Логин
       <input
         type="text"
         class="authorization-form-name"
-        id="name-input"
+        id="login-input"
       />
-      <br />`
-      }
-    
-        Логин
-        <input
-          type="text"
-          class="authorization-form-name"
-          id="login-input"
-        />
-        <br />
-        Пароль
-        <input
-          type="password"
-          class="authorization-form-name"
-          id="password-input"
-        />
-        <br />
-      </div>
-      <div class="add-form-row">
-        <button class="add-form-button" id="login-button">${
-          isLoginMode ? "Войти" : "Зарегистрироваться"
-        }</button>
-        <br /><br />
-        <button class="add-form-button" id="toggle-button">${
-          isLoginMode ? "К регистрации" : "Ко входу"
-        }</button>
-      </div>
+      <br />
+      Пароль
+      <input
+        type="password"
+        class="authorization-form-name"
+        id="password-input"
+      />
+      <br />
     </div>
-    </div>`;
+    <div class="add-form-row">
+      <button class="add-form-button" id="login-button">${
+        isLoginMode ? "Войти" : "Зарегистрироваться"
+      }</button>
+      <br /><br />
+      <button class="add-form-button" id="toggle-button">${
+        isLoginMode ? "К регистрации" : "Ко входу"
+      }</button>
+    </div>
+  </div>
+  </div></div>
+    `;
 
     appEl.innerHTML = appHtml;
 
@@ -84,9 +84,9 @@ export function renderLoginComponent({ appEl, setToken, renderApp }) {
         const password = document.getElementById("password-input").value;
 
         if (!name) {
-            alert("Введите имя");
-            return;
-          }
+          alert("Введите имя");
+          return;
+        }
 
         if (!login) {
           alert("Введите логин");
