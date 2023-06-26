@@ -1,6 +1,7 @@
 import { getDate } from "./helper.js";
 const host = "https://wedev-api.sky.pro/api/v2/polina-gogol/comments";
 let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
+token = null;
 
 export const getComments = () => {
   return fetch(host, {
