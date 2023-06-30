@@ -1,3 +1,4 @@
+
 export function getDate(date) {
     let currentDate = new Date(date);
     let month = Number(currentDate.getMonth() + 1);
