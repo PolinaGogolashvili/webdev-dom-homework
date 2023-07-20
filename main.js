@@ -1,5 +1,6 @@
 "use strict";
 
+import { format } from "date-fns";
 import { getComments, addComment } from "./api.js";
 import { renderLoginComponent } from "./loginComponents.js";
 
@@ -46,10 +47,11 @@ const renderApp = () => {
 
   const commentsHtml = comments
     .map((comment, index) => {
+      const date = new Date(comment.date)
       return `<li data-index="${index}" class="comment">
 <div class="comment-header">
 <div class="comment-name">${comment.name}</div>
-<div>${comment.date}</div>
+<div>${format(date, "yyyy-dd-MM hh:mm:ss")}</div>
 </div>
 <div class="comment-body">
 <div class="comment-text">

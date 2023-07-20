@@ -23,7 +23,7 @@ export const getComments = () => {
       const appComments = responseData.comments.map((comment) => {
         return {
           name: comment.author.name,
-          date: getDate(comment.date),
+          date: new Date(comment.date),
           text: comment.text,
           likes: comment.likes,
           isLiked: false,
